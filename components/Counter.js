@@ -1,13 +1,4 @@
 import React, { Component, PropTypes } from 'react'
-//        <div>
-//          <button onClick={getAbsents}>getAbsents</button>
-//          <ul>
-//            {items.map((x, i) =>
-//              <li key={i}>{x.id}</li>
-//            )}
-//          </ul>
-//        </div>
-
 class Counter extends Component {
   constructorkj
   constructor(props) {
@@ -15,11 +6,11 @@ class Counter extends Component {
   }
   componentDidMount() {
     const { getAbsents } = this.props
-    getAbsents()
+    getAbsents();
   }
 
   render() {
-    const { increment, incrementIfOdd, incrementAsync, decrement, counter, getAbsents, items } = this.props
+    const { increment, incrementIfOdd, incrementAsync, decrement, counter, getAbsents, items, postAbsent } = this.props
     return (
       <div>
         <div className="wrapper">
@@ -27,7 +18,6 @@ class Counter extends Component {
             <img src="images/logo.png" alt="Attendance mamnagement system" />
           </div>
           <div className="gridmaster">
-            <p>{console.log(items)}</p>
             <form id="search-area" method="get" action="index.html">
               <input type="text" name="condition" id="search-box" placeholder="Please Input Team, Name, Date" />
             </form>
@@ -42,16 +32,16 @@ class Counter extends Component {
             <p className="title">Paid leave off</p>
             <hr className="fancy-line" />
             {items.map((x, i) =>
-              <section className="item">
+              <section className="item" key={i}>
                 <a href="#">
-                  <img className="thumbnail" src="images/thumbnail1.png" alt="thumbnail" />
-                  <div className="name">Takahiro Fujii</div>
-                  <p className="department">Development Group</p>
+                  <img className="thumbnail" src={x.icon} alt="thumbnail" />
+                  <div className="name">{x.name}</div>
+                  <p className="department">{x.group}</p>
                 </a>
               </section>
             )}
-            <div className="btn">
-              <a href="#entry-modal">+ ADD INFORMATION</a>
+            <div className="btn" onClick={postAbsent}>
+              <a href="#">+ ADD INFORMATION</a>
             </div>
           </div>
           <div className="grid">
@@ -123,7 +113,7 @@ class Counter extends Component {
               </a>
             </section>
             <div className="btn">
-              <a href="#entry-modal">+ ADD INFORMATION</a>
+              <a href="#">+ ADD INFORMATION</a>
             </div>
           </div>
           <div className="grid">
@@ -154,68 +144,74 @@ class Counter extends Component {
               </a>
             </section>
             <div className="btn">
-              <a href="#entry-modal">+ ADD INFORMATION</a>
+              <a href="#">+ ADD INFORMATION</a>
             </div>
           </div>
         </div>{/* /.gridmaster */}
         <section id="entry-modal" className="modal">
           <div className="modal-inner">
-            <div className="circle-wrapper">
-              <div className="circle" />
-            </div>
             <h2>Attendance Information</h2>
             <form className="entry-form" method="get" action="#">
-              <input type="text" name="name" placeholder="please input target name" />
               <p>please choose status</p>
               <div className="stat-icon-list">
                 <input type="radio" name="icon" id="select1" defaultValue={1} defaultChecked />
                 <label htmlFor="select1">
-                  <img className="stat-icon" src="images/icons/icon-train-delay.png" alt="train-delay" />
+                  <img className="stat-icon" src="images/icons/icon-morning-off.png" alt="train-delay" />
                 </label>
                 <input type="radio" name="icon" id="select2" defaultValue={2} defaultChecked />
                 <label htmlFor="select2">
-                  <img className="stat-icon" src="images/icons/icon-train-delay.png" alt="train-delay" />
+                  <img className="stat-icon" src="images/icons/icon-afternoon-off.png" alt="train-delay" />
                 </label>
                 <input type="radio" name="icon" id="select3" defaultValue={3} defaultChecked />
                 <label htmlFor="select3">
-                  <img className="stat-icon" src="images/icons/icon-train-delay.png" alt="train-delay" />
+                  <img className="stat-icon" src="images/icons/icon-paid-leave.png" alt="train-delay" />
                 </label>
                 <input type="radio" name="icon" id="select4" defaultValue={4} defaultChecked />
                 <label htmlFor="select4">
-                  <img className="stat-icon" src="images/icons/icon-train-delay.png" alt="train-delay" />
+                  <img className="stat-icon" src="images/icons/icon-late.png" alt="train-delay" />
                 </label>
                 <input type="radio" name="icon" id="select5" defaultValue={5} defaultChecked />
                 <label htmlFor="select5">
-                  <img className="stat-icon" src="images/icons/icon-train-delay.png" alt="train-delay" />
+                  <img className="stat-icon" src="images/icons/icon-business-trip.png" alt="train-delay" />
                 </label>
                 <input type="radio" name="icon" id="select6" defaultValue={6} defaultChecked />
-                <label htmlFor="select6">
-                  <img className="stat-icon" src="images/icons/icon-train-delay.png" alt="train-delay" />
-                </label>
-                <input type="radio" name="icon" id="select7" defaultValue={7} defaultChecked />
-                <label htmlFor="select7">
-                  <img className="stat-icon" src="images/icons/icon-train-delay.png" alt="train-delay" />
-                </label>
-                <input type="radio" name="icon" id="select8" defaultValue={8} defaultChecked />
-                <label htmlFor="select8">
-                  <img className="stat-icon" src="images/icons/icon-train-delay.png" alt="train-delay" />
-                </label>
               </div>
-              <div className="date">
-                DATE
-                <input type="date" name="date" autoComplete="on" required />
-              </div>
-              <div className="time">
-                TIME
-                <input type="time" name="start" autoComplete="on" defaultValue="09:00" required />
-                <span className="seperator">-</span>
-                <input type="time" name="end" autoComplete="on" required />
-              </div>
-              REASON<textarea name="reason" placeholder="please input reason" defaultValue={""} />
-              <input type="submit" defaultValue="SEND" />
+              <div className="input-name">
+              </div><div className="date">
+              </div><div className="time">
+              </div><div className="reason">
+              </div><table className="table-form">
+                <tbody><tr>
+                    <th>NAME</th>
+                    <td><input type="text" name="name" placeholder="target name" /></td>
+                    {/* /.input-name */}
+                  </tr>
+                  <tr>
+                    <th>DATE</th>
+                    <td><input id="input-date" type="date" name="date" autoComplete="on" required /></td>
+                    {/* /.date */}
+                  </tr>
+                  <tr>
+                    <th>TIME</th>
+                    <td><input type="time" name="start" autoComplete="on" defaultValue="09:00" required />
+                      <span className="seperator">-</span>
+                      <input type="time" name="end" autoComplete="on" defaultValue="09:15" required />
+                    </td>
+                    {/* /.time */}
+                  </tr>
+                  <tr>
+                    <th>REASON</th>
+                    <td><input type="text" name="reason" placeholder="reason" /></td>
+                  </tr>
+                </tbody></table>
+              <div className="submitbutton">
+                <input type="submit" defaultValue="SEND" />
+              </div>{/* /.submitbutton */}
             </form>
           </div>
-          <a href="#" className="close"><span>close</span></a>
+          <a href="#" className="close">
+            <div className="btn"><span>close</span></div>
+          </a>
         </section>
       </div>
     )

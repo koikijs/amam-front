@@ -38,20 +38,56 @@ export function getAbsents() {
   var Client = require('node-rest-client').Client;
   var client = new Client();
   return dispatch => {
-    client.get('http://amam-api.herokuapp.com/absents', function(data, response) {
-      var promises = []
-      for(let item of data.items) {
+    client.get('http://chaus.herokuapp.com/apis/amam/absents', function(data, response) {
+      var promises = [];
+      var hrefList = data.items.map(item => item.member.href)
+      var hrefSet = new Set();
+      for(let href of hrefList) {
+        hrefSet.add(href);
+      }
+      for(let href of hrefSet) {
+        const url = 'http://chaus.herokuapp.com' + href
         promises.push(new Promise(function(resolve) {
-          client.get('http://amam-api.herokuapp.com' + item.member.href), function(data, response) {
-            resolve(data.items)
-          }
+          client.get(url, function(data, response) {
+            //console.log(item, data);
+            resolve({
+              href,
+              "icon"  : data.icon,
+              "name"  : data.name,
+              "group" : data.group.id
+            });
+          })
         }))
       }
-      Promise.all([true, promises]).then(values => {
-        console.log(values);
-        dispatch(receiveAbsents(values));
+      Promise.all(promises).then(memberMaster => {
+        var members = []
+        for(let item of data.items) {
+            members.push(memberMaster.filter(member => member.href == item.member.href).pop())
+        }
+        dispatch(receiveAbsents(members));
+        //console.log(values);
       });
     })
+  }
+}
+
+export function postAbsent() {
+  var Client = require('node-rest-client').Client;
+  var client = new Client();
+  return dispatch => {
+    var absent = { data : {"member":"sideroad",
+                           "date":"2015-03-23",
+                           "stat":"paid",
+                           "start":"09:00",
+                           "end":"17:30",
+                           "reason":"BadCondition"
+                          },
+                   headers : { "Content-Type": "application/json" }
+                 }
+    client.post('http://chaus.herokuapp.com/apis/amam/absents', absent, function(data, response) {
+      console.log(33);
+      dispatch(getAbsents());
+    });
   }
 }
 
